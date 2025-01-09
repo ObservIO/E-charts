@@ -1,11 +1,17 @@
-import { AdvancedChartManager } from './advancedCharts';
-import { LineChartManager } from './lineCharts';
+declare global {
+    interface Window {
+        echarts: typeof import('echarts');
+    }
+}
+
+import { AdvancedChartManager } from './advancedCharts.js';
+import { LineChartManager } from './lineCharts.js';
 
 interface ChartOptions {
     [key: string]: any;
 }
 
-class ChartManager {
+export class ChartManager {
     private chart: echarts.ECharts;
     private container: HTMLDivElement;
 
@@ -25,10 +31,11 @@ class ChartManager {
     private updateChart(chartType: string): void {
         let options: ChartOptions;
 
-        // First check line charts
+        // Extract the chart type from the full value (e.g., 'line-basic' -> 'basic')
+        const type = chartType.split('-')[1];
+
         if (chartType.startsWith('line-')) {
-            const lineType = chartType.substring(5);
-            switch (lineType) {
+            switch (type) {
                 case 'basic':
                     options = LineChartManager.getBasicLine();
                     break;
@@ -1882,6 +1889,8 @@ class ChartManager {
 }
 
 // Initialize the chart manager when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+export function initialize() {
     new ChartManager();
-});
+}
+
+document.addEventListener('DOMContentLoaded', initialize);

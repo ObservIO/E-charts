@@ -54,26 +54,15 @@ export class LineChartManager {
     static getStackedLine(): ChartOptions {
         return {
             title: { text: 'Stacked Line Chart' },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['Email', 'Union Ads', 'Video Ads', 'Direct'] },
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
                 data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
             },
-            yAxis: {
-                type: 'value'
-            },
+            yAxis: { type: 'value' },
             series: [
                 {
                     name: 'Email',
@@ -98,12 +87,6 @@ export class LineChartManager {
                     type: 'line',
                     stack: 'Total',
                     data: [320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name: 'Search Engine',
-                    type: 'line',
-                    stack: 'Total',
-                    data: [820, 932, 901, 934, 1290, 1330, 1320]
                 }
             ]
         };
@@ -112,6 +95,7 @@ export class LineChartManager {
     static getGradientLine(): ChartOptions {
         return {
             title: { text: 'Gradient Line Chart' },
+            tooltip: { trigger: 'axis' },
             xAxis: {
                 type: 'category',
                 data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -120,18 +104,19 @@ export class LineChartManager {
             series: [{
                 data: [820, 932, 901, 934, 1290, 1330, 1320],
                 type: 'line',
+                smooth: true,
                 lineStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#83bff6' },
-                        { offset: 0.5, color: '#188df0' },
-                        { offset: 1, color: '#188df0' }
-                    ])
+                    width: 0
                 },
                 areaStyle: {
+                    opacity: 0.8,
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: 'rgb(255, 158, 68)' },
-                        { offset: 1, color: 'rgb(255, 70, 131)' }
+                        { offset: 0, color: 'rgb(128, 255, 165)' },
+                        { offset: 1, color: 'rgb(1, 191, 236)' }
                     ])
+                },
+                emphasis: {
+                    focus: 'series'
                 }
             }]
         };
@@ -140,17 +125,12 @@ export class LineChartManager {
     static getMultipleAxisLine(): ChartOptions {
         return {
             title: { text: 'Multiple Y-Axes Line Chart' },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: { type: 'cross' }
-            },
-            legend: {
-                data: ['Temperature', 'Humidity', 'Pressure']
-            },
-            xAxis: [{
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['Temperature', 'Humidity', 'Pressure'] },
+            xAxis: {
                 type: 'category',
-                data: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00']
-            }],
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
             yAxis: [
                 {
                     type: 'value',
@@ -176,19 +156,20 @@ export class LineChartManager {
                 {
                     name: 'Temperature',
                     type: 'line',
-                    data: [15, 13, 12, 18, 25, 28, 24, 20]
+                    data: [20, 22, 25, 21, 23, 20, 18],
+                    yAxisIndex: 0
                 },
                 {
                     name: 'Humidity',
                     type: 'line',
-                    yAxisIndex: 1,
-                    data: [60, 65, 70, 55, 45, 40, 50, 55]
+                    data: [60, 55, 50, 65, 58, 62, 68],
+                    yAxisIndex: 1
                 },
                 {
                     name: 'Pressure',
                     type: 'line',
-                    yAxisIndex: 2,
-                    data: [1012, 1011, 1014, 1013, 1012, 1011, 1013, 1014]
+                    data: [1015, 1013, 1012, 1016, 1015, 1014, 1013],
+                    yAxisIndex: 2
                 }
             ]
         };
@@ -198,9 +179,7 @@ export class LineChartManager {
         return {
             title: { text: 'Step Line Chart' },
             tooltip: { trigger: 'axis' },
-            legend: {
-                data: ['Step Start', 'Step Middle', 'Step End']
-            },
+            legend: { data: ['Step Start', 'Step Middle', 'Step End'] },
             xAxis: {
                 type: 'category',
                 data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -230,62 +209,82 @@ export class LineChartManager {
     }
 
     static getConfidenceBand(): ChartOptions {
-        const baseValue = Math.random() * 1000;
-        const data = Array.from({ length: 100 }, (_, i) => [
-            i,
-            baseValue + Math.random() * 200 - 100,
-            baseValue + Math.random() * 100,
-            baseValue + Math.random() * 300 - 150
-        ]);
+        const baseValue = [];
+        const uncertainty = [];
+        for (let i = 0; i < 100; i++) {
+            const base = Math.sin(i / 5) * (i / 5 - 10) + i / 6;
+            baseValue.push([i, base]);
+            uncertainty.push([i, base - Math.random() * 3, base + Math.random() * 3]);
+        }
 
         return {
             title: { text: 'Confidence Band' },
+            tooltip: { trigger: 'axis' },
             xAxis: { type: 'value' },
             yAxis: { type: 'value' },
-            series: [{
-                type: 'line',
-                data: data.map(item => [item[0], item[2]]),
-                name: 'Line',
-                smooth: true,
-                markArea: {
-                    data: data.map(item => [{
-                        xAxis: item[0],
-                        yAxis: item[1]
-                    }, {
-                        xAxis: item[0],
-                        yAxis: item[3]
-                    }])
+            series: [
+                {
+                    name: 'Base Line',
+                    type: 'line',
+                    data: baseValue,
+                    smooth: true
+                },
+                {
+                    name: 'Uncertainty',
+                    type: 'line',
+                    data: uncertainty,
+                    smooth: true,
+                    lineStyle: { opacity: 0 },
+                    areaStyle: {
+                        opacity: 0.3,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgb(55, 162, 255)' },
+                            { offset: 1, color: 'rgb(116, 21, 219)' }
+                        ])
+                    }
                 }
-            }]
+            ]
         };
     }
 
     static getDynamicLine(): ChartOptions {
+        const data: number[] = [];
+        let now = new Date();
+        let value = Math.random() * 1000;
+
+        for (let i = 0; i < 1000; i++) {
+            data.push(value);
+            value = value + Math.random() * 21 - 10;
+        }
+
         return {
             title: { text: 'Dynamic Line Chart' },
+            tooltip: { trigger: 'axis' },
             xAxis: {
-                type: 'time',
-                splitLine: { show: false }
+                type: 'category',
+                data: Array.from({ length: 1000 }, (_, i) => i)
             },
-            yAxis: {
-                type: 'value',
-                boundaryGap: [0, '100%'],
-                splitLine: { show: false }
-            },
+            yAxis: { type: 'value' },
             series: [{
-                name: 'Dynamic Data',
                 type: 'line',
-                showSymbol: false,
-                data: Array.from({ length: 100 }, (_, i) => {
-                    const time = new Date();
-                    time.setSeconds(time.getSeconds() - 100 + i);
-                    return [time, Math.random() * 100];
-                })
+                data: data,
+                animation: false,
+                lineStyle: { width: 1 }
             }]
         };
     }
 
     static getZoomLine(): ChartOptions {
+        const data: [string, number][] = [];
+        let now = new Date();
+        let value = Math.random() * 1000;
+
+        for (let i = 0; i < 1000; i++) {
+            data.push([now.toISOString(), value]);
+            now = new Date(+now + 86400000);
+            value = value + Math.random() * 21 - 10;
+        }
+
         return {
             title: { text: 'Large Scale Line Chart with Zoom' },
             tooltip: { trigger: 'axis' },
@@ -297,40 +296,44 @@ export class LineChartManager {
                 }
             },
             xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: Array.from({ length: 1000 }, (_, i) => `Point ${i}`)
+                type: 'time',
+                boundaryGap: false
             },
             yAxis: { type: 'value', boundaryGap: [0, '100%'] },
             dataZoom: [
-                { type: 'inside', start: 0, end: 10 },
-                { start: 0, end: 10 }
+                { type: 'inside', start: 0, end: 20 },
+                { start: 0, end: 20 }
             ],
             series: [{
-                name: 'Data',
+                name: 'Value',
                 type: 'line',
+                smooth: true,
                 symbol: 'none',
-                sampling: 'lttb',
-                data: Array.from({ length: 1000 }, () => Math.random() * 1000)
+                areaStyle: {},
+                data: data
             }]
         };
     }
 
     static getPolarLine(): ChartOptions {
+        const data: number[][] = [];
+        for (let i = 0; i <= 360; i++) {
+            const t = (i / 180) * Math.PI;
+            const r = Math.sin(2 * t) * Math.cos(2 * t);
+            data.push([r, i]);
+        }
+
         return {
             title: { text: 'Polar Line Chart' },
-            polar: {},
             tooltip: { trigger: 'axis' },
+            polar: {},
             angleAxis: { type: 'value', startAngle: 0 },
             radiusAxis: {},
             series: [{
                 coordinateSystem: 'polar',
                 name: 'Line',
                 type: 'line',
-                data: Array.from({ length: 360 }, (_, i) => [
-                    i,
-                    Math.sin(i * Math.PI / 180) * 2 + Math.random() * 0.5
-                ])
+                data: data
             }]
         };
     }
@@ -338,25 +341,21 @@ export class LineChartManager {
     static getStackedAreaLine(): ChartOptions {
         return {
             title: { text: 'Stacked Area Chart' },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: { type: 'cross', label: { backgroundColor: '#6a7985' } }
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['Email', 'Union Ads', 'Video Ads', 'Direct'] },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
             },
-            legend: {
-                data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
-            },
-            toolbox: { feature: { saveAsImage: {} } },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: [{
-                type: 'category',
-                boundaryGap: false,
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            }],
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                }
+            ],
             yAxis: [{ type: 'value' }],
             series: [
                 {
@@ -390,15 +389,6 @@ export class LineChartManager {
                     areaStyle: {},
                     emphasis: { focus: 'series' },
                     data: [320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name: 'Search Engine',
-                    type: 'line',
-                    stack: 'Total',
-                    label: { show: true, position: 'top' },
-                    areaStyle: {},
-                    emphasis: { focus: 'series' },
-                    data: [820, 932, 901, 934, 1290, 1330, 1320]
                 }
             ]
         };
@@ -407,34 +397,28 @@ export class LineChartManager {
     static getMarkPointLine(): ChartOptions {
         return {
             title: { text: 'Line with Mark Points' },
+            tooltip: { trigger: 'axis' },
             xAxis: {
                 type: 'category',
                 data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
             },
             yAxis: { type: 'value' },
             series: [{
-                data: [120, 200, 150, 80, 70, 110, 130],
+                data: [820, 932, 901, 934, 1290, 1330, 1320],
                 type: 'line',
                 markPoint: {
                     data: [
-                        { type: 'max', name: 'Maximum' },
-                        { type: 'min', name: 'Minimum' },
-                        { type: 'average', name: 'Average' }
+                        { type: 'max', name: 'Max' },
+                        { type: 'min', name: 'Min' }
                     ]
                 },
                 markLine: {
                     data: [
                         { type: 'average', name: 'Average' },
-                        [{
-                            symbol: 'none',
-                            x: '90%',
-                            yAxis: 'max'
-                        }, {
-                            symbol: 'circle',
-                            label: { position: 'start', formatter: 'Max' },
-                            type: 'max',
-                            name: 'Highest Point'
-                        }]
+                        [
+                            { coord: [0, 820], symbol: 'none' },
+                            { coord: [6, 1320], symbol: 'none' }
+                        ]
                     ]
                 }
             }]
@@ -475,16 +459,15 @@ export class LineChartManager {
                     markLine: {
                         data: [
                             { type: 'average', name: 'Avg' },
-                            [{
-                                symbol: 'none',
-                                x: '90%',
-                                yAxis: 'max'
-                            }, {
-                                symbol: 'circle',
-                                label: { position: 'start', formatter: 'Max' },
-                                type: 'max',
-                                name: 'Highest point'
-                            }]
+                            [
+                                { symbol: 'none', x: '90%', yAxis: 'max' },
+                                {
+                                    symbol: 'circle',
+                                    label: { position: 'start', formatter: 'Max' },
+                                    type: 'max',
+                                    name: 'Highest point'
+                                }
+                            ]
                         ]
                     }
                 }
@@ -662,14 +645,10 @@ export class LineChartManager {
                 boundaryGap: false
             },
             yAxis: { type: 'value', boundaryGap: [0, '100%'] },
-            dataZoom: [{
-                type: 'inside',
-                start: 0,
-                end: 10
-            }, {
-                start: 0,
-                end: 10
-            }],
+            dataZoom: [
+                { type: 'inside', start: 0, end: 10 },
+                { start: 0, end: 10 }
+            ],
             series: [{
                 name: 'Value',
                 type: 'line',
