@@ -1,0 +1,24 @@
+{
+  "name": "e-charts",
+  "version": "1.0.0",
+  "description": "ECharts Demo with various chart types",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "npx http-server .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "echarts",
+    "visualization",
+    "charts"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/echarts": "^4.9.0",
+    "http-server": "^14.1.1",
+    "typescript": "^5.0.0"
+  }
+}
